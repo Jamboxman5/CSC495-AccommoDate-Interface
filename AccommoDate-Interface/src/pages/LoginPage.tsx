@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { login } from '../services/auth';
+import { login, storeToken, storeID } from '../services/auth';
 
 export default function MyApp() {
   const [email, setEmail] = useState('');
@@ -21,10 +21,7 @@ export default function MyApp() {
     //     password
     //   });
 
-      const res = await login(username, password);
-
-      localStorage.setItem('jwt', res[0]);
-      localStorage.setItem('userID', res[1]);
+      await login(username, password);
       navigate('/home');
 
     } catch (err) {
