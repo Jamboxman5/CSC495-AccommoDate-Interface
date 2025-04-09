@@ -1,21 +1,10 @@
 import { useEffect, useState } from "react";
 import { getToken, getID } from "../services/auth";
-
-interface Exam {
-    examid: string;
-    crn: number;
-    examdate: string;
-    examtime: string;
-    studentid: string;
-    examlocation: string;
-    examconfirmed: boolean;
-    examcomplete: boolean;
-    examonline: boolean;
-    examduration: number;
-}
+import { FullExam } from "../interfaces/FullExam";
+import { formatMinutes } from "../services/dateUtil";
 
 export default function StudentExamList() {
-    const [exams, setExams] = useState<Exam[]>([]);
+    const [exams, setExams] = useState<FullExam[]>([]);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
@@ -36,7 +25,7 @@ export default function StudentExamList() {
                 if (!res.ok) throw new Error('Failed to fetch exams');
                 return res.json();
             })
-            .then((data: Exam[]) => {
+            .then((data: FullExam[]) => {
                 setExams(data);
             })
             .catch((err) => {
@@ -50,18 +39,18 @@ export default function StudentExamList() {
 
     return (
         <div>
-            <h2>Your Exams</h2>
+            <h2>Your Exams: </h2>
             {error && <p style={{ color: 'red' }}>{error}</p>}
             <ul>
-                {exams.map((exam) => {
-                    const formattedDate = new Date(exam.examdate).toLocaleDateString(undefined, {
+                {exams.map((fullExam) => {
+                    const formattedDate = new Date(fullExam.exam.examdate).toLocaleDateString(undefined, {
                         weekday: "long",
                         year: "numeric",
                         month: "long",
                         day: "numeric"
                     });
 
-                    const timeSplit = exam.examtime.split(":");
+                    const timeSplit = fullExam.exam.examtime.split(":");
                     const timeDate = new Date();
                     timeDate.setHours(Number(timeSplit[0]), Number(timeSplit[1]))
 
@@ -71,8 +60,8 @@ export default function StudentExamList() {
                     });
 
                     return (
-                        <li key={exam.examid}>
-                            <strong>{formattedDate}</strong> — {formattedTime} (CRN: {exam.crn})
+                        <li key={fullExam.exam.examid}>
+                            <strong>{formattedDate}</strong> — {formattedTime} | {fullExam.course.courseid} | {formatMinutes(fullExam.exam.examduration * 1.5)}
                         </li>
                     );
 

@@ -3,7 +3,9 @@ import { getUserRole, logout } from '../services/auth';
 import { formatDate } from '../services/dateUtil';
 import { useEffect, useState } from 'react';
 import StudentExamList from '../components/StudentExamList';
-import DatedExamList from '../components/AdminExamList';
+import DatedExamList from '../components/DatedExamList';
+import NavigationBar from '../components/NavigationBar';
+import AdminExamList from '../components/AdminExamList';
 
 export default function HomePage() {
     
@@ -28,20 +30,22 @@ export default function HomePage() {
 
     return (
         <div>
+            <NavigationBar/>
             <h1>Welcome to AccommoDate!</h1>
             <p>You are logged in as <strong>{role}</strong>.</p>
             
             {role === "ROLE_ADMIN" ? (
-                <>
-                    <label htmlFor="exam-date">Choose a date: </label>
-                    <input
-                        type = "date"
-                        id = "exam-date"
-                        value = {selectedDate}
-                        onChange={(e) => setSelectedDate(e.target.value)}
-                    />
-                    <DatedExamList date = {selectedDate} />
-                </>
+                // <>
+                //     <label htmlFor="exam-date">Choose a date: </label>
+                //     <input
+                //         type = "date"
+                //         id = "exam-date"
+                //         value = {selectedDate}
+                //         onChange={(e) => setSelectedDate(e.target.value)}
+                //     />
+                //     <DatedExamList date = {selectedDate} />
+                // </>
+                <AdminExamList date = {formatDate(new Date())}/>
             ) : (
                 <StudentExamList/>
             )}

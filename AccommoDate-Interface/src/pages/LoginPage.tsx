@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { login, storeToken, storeID } from '../services/auth';
+import { login, } from '../services/auth';
 
 export default function MyApp() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = async() => {
+  const handleLogin = async () => {
     try {
       if (!email.endsWith("@oswego.edu")) {
         alert("Please use your Oswego email address!");
@@ -16,10 +16,10 @@ export default function MyApp() {
 
       const username = email.split("@")[0];
 
-    //   console.log('Sending request to login:', {
-    //     email: email.split('@')[0],
-    //     password
-    //   });
+      //   console.log('Sending request to login:', {
+      //     email: email.split('@')[0],
+      //     password
+      //   });
 
       await login(username, password);
       navigate('/home');
@@ -34,24 +34,31 @@ export default function MyApp() {
   };
 
   return (
-    <div style={{ padding: '2rem' }}>
-      <h1>Login</h1>
-      <input
-        type="email"
-        placeholder="Your Oswego Email"
-        value={email}
-        onChange={e => setEmail(e.target.value)}
-    />
-    <br />
-    <input
-      type="password"
-      placeholder='Password'
-      value={password}
-      onChange={e => setPassword(e.target.value)}
-      />
-      <br/>
-      <button onClick={handleLogin}>Login</button>
-</div>
+    <div className="bg-gradient-to-br from-blue-100 to-indigo-200 w-screen h-screen flex items-center justify-center min-h-screen bg-gray-200">
+      <div className="bg-white p-8 rounded-2xl shadow-md w-full max-w-md">
+        <h1 className="text-2xl font-semibold mb-6 text-center text-gray-800">Login</h1>
+        <div className="space-y-4">
+          <input
+            type="email"
+            placeholder="Your Oswego Email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <input
+            type="password"
+            placeholder='Password'
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <button
+            onClick={handleLogin}
+            className="w-full !bg-blue-500 hover:text-gray-100 text-white py-2 px-4 rounded-lg hover:!bg-blue-600 transition-colors">Login</button>
+        </div>
+      </div>
+    </div>
+
   );
 }
 

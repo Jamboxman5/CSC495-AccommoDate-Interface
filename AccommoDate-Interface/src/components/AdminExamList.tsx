@@ -1,30 +1,20 @@
 import { useEffect, useState } from "react";
-import { getToken, getID } from "../services/auth";
-import { formatWeekDate } from "../services/dateUtil";
-
-interface Exam {
-    examid: string;
-    crn: number;
-    examdate: string;
-    examtime: string;
-    studentid: string;
-    examlocation: string;
-    examconfirmed: boolean;
-    examcomplete: boolean;
-    examonline: boolean;
-    examduration: number;
-}
-
+import { getToken } from "../services/auth";
+import { formatWeekDate, formatTime, getCourseEndTime } from "../services/dateUtil";
+import { FullExam } from "../interfaces/FullExam";
+import { User } from "../interfaces/User";
+import { Exam } from "../interfaces/Exam";
+import { getAccommodationString } from "../services/textUtil";
 type Props = {
     date: string;
 }
 
-export default function DatedExamList({ date }: Props) {
-    const [exams, setExams] = useState<Exam[]>([]);
+export default function AdminExamList({ date }: Props) {
+    const [exams, setExams] = useState<FullExam[]>([]);
     const [error, setError] = useState<string | null>(null);
 
 
-    
+
     useEffect(() => {
         const token = getToken();
 
@@ -42,7 +32,7 @@ export default function DatedExamList({ date }: Props) {
                 if (!res.ok) throw new Error('Failed to fetch exams');
                 return res.json();
             })
-            .then((data: Exam[]) => {
+            .then((data: FullExam[]) => {
                 setExams(data);
             })
             .catch((err) => {
@@ -51,34 +41,120 @@ export default function DatedExamList({ date }: Props) {
     }, [date]);
 
 
+
     
 
+    const toggleOnline = (examID: string) => {
+        const updatedExams = exams.map((exam) => {
+            if (exam.exam.examid === examID) {
+                return {
+                    ...exam,
+                    exam: {
+                        ...exam.exam,
+                        examonline: !exam.exam.examonline,
+                    },
+                };
+            }
+            return exam;
+        });
+
+        setExams(updatedExams);
+    };
+
+    const toggleComplete = (examID: string) => {
+        const updatedExams = exams.map((exam) => {
+            if (exam.exam.examid === examID) {
+                return {
+                    ...exam,
+                    exam: {
+                        ...exam.exam,
+                        examcomplete: !exam.exam.examcomplete,
+                    },
+                };
+            }
+            return exam;
+        });
+
+        setExams(updatedExams);
+    };
+
+    const handleCompleteToggle = (examID: string, isComplete: boolean) => {
+        if (isComplete) {
+            const confirm = window.confirm("Are you sure you want to mark this exam as incomplete?");
+            if (!confirm) return;
+        } else {
+            const confirm = window.confirm("Are you sure you want to mark this exam as complete?");
+            if (!confirm) return;
+        }
+
+        const updatedExams = exams.map((exam) => {
+            if (exam.exam.examid === examID) {
+                return {
+                    ...exam,
+                    exam: {
+                        ...exam.exam,
+                        examcomplete: !exam.exam.examcomplete,
+                    },
+                };
+            }
+            return exam;
+        });
+
+        setExams(updatedExams);
+
+        }
 
     return (
         <div>
-            <h2>Exams on {formatWeekDate(date)}:</h2>
+            <h2>Today's Exams:</h2>
             {error && <p style={{ color: 'red' }}>{error}</p>}
-            <ul>
-                {exams.map((exam) => {
-                    const formattedDate = formatWeekDate(exam.examdate)
+            {exams.length === 0 ? (
+                <p>There are no exams today!</p>
+            ) : (
+                <table className="table-auto border border-collapse w-full">
+                    <thead>
+                        <tr className="bg-gray-200">
+                            <th className="border p-2">Student</th>
+                            <th className="border p-2">Course</th>
+                            <th className="border p-2">Start Time</th>
+                            <th className="border p-2">Location</th>
+                            <th className="border p-2">Class Days</th>
+                            <th className="border p-2">End Time</th>
+                            <th className="border p-2">Accommodations</th>
+                            <th className="border p-2">Online?</th>
+                            <th className="border p-2">Complete?</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {exams.map((fullExam) => (
+                            <tr key={fullExam.exam.crn}>
+                                <td className="text-center border p-2">{fullExam.user.fullname}</td>
+                                <td className="text-center border p-2">{fullExam.course.courseid}</td>
+                                <td className="text-center border p-2">{formatTime(fullExam.exam.examtime)}</td>
+                                <td className="text-center border p-2">{fullExam.exam.examlocation}</td>
+                                <td className="text-center border p-2">{fullExam.course.meetdays}</td>
+                                <td className="text-center border p-2">{getCourseEndTime(fullExam.exam.examtime, fullExam.exam.examduration * fullExam.user.timeextension)}</td>
+                                <td className="text-center border p-4">{getAccommodationString(fullExam.user)}</td>
+                                <td className="border p-2 text-center">
+                                    <input
+                                        type="checkbox"
+                                        checked={fullExam.exam.examonline}
+                                        onChange={() => toggleOnline(fullExam.exam.examid)}
+                                    />
+                                </td>
+                                <td className="border p-2 text-center">
+                                    <input
+                                        type="checkbox"
+                                        checked={fullExam.exam.examcomplete}
+                                        onChange={() => handleCompleteToggle(fullExam.exam.examid, fullExam.exam.examcomplete)}
+                                    />
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            )}
 
-                    const timeSplit = exam.examtime.split(":");
-                    const timeDate = new Date();
-                    timeDate.setHours(Number(timeSplit[0]), Number(timeSplit[1]))
-
-                    const formattedTime = timeDate.toLocaleTimeString(undefined, {
-                        hour: "numeric",
-                        minute: "2-digit",
-                    });
-
-                    return (
-                        <li key={exam.examid}>
-                            <strong>{formattedDate}</strong> — {formattedTime} (CRN: {exam.crn})
-                        </li>
-                    );
-
-                })}
-            </ul>
         </div>
     );
 }

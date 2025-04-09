@@ -1,3 +1,20 @@
+import { jwtDecode } from "jwt-decode";
+
+interface JwtPayload {
+  exp: number;
+  [key: string]: any;
+}
+
+export function isTokenExpired(token: string): boolean {
+  try {
+    const decoded: JwtPayload = jwtDecode(token);
+    const currentTime = Math.floor(Date.now() / 1000);
+    return decoded.exp < currentTime;
+  } catch (e) {
+    return true;
+  }
+}
+
 export async function login(email: string, password: string) {
   const response = await fetch('http://localhost:8080/api/auth/login', {
     method: 'POST',
