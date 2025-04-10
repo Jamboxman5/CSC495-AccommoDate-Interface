@@ -1,0 +1,1 @@
+export function getOrganizationDomain(): string { return "oswego.edu"};

@@ -1,22 +1,22 @@
 import { useEffect, useState } from "react";
 import { getToken } from "../services/auth";
-import { formatWeekDate, formatTime } from "../services/dateUtil";
+import { formatWeekDate, formatTime, getCourseEndTime } from "../services/dateUtil";
 import { FullExam } from "../interfaces/FullExam";
-import { getCourseEndTime } from "../services/dateUtil";
 import { getAccommodationString } from "../services/textUtil";
-import "./tailwind.css";
 type Props = {
     date: string;
 }
 
-export default function DatedExamList({ date }: Props) {
+export default function ExamBoard({ date }: Props) {
     const [exams, setExams] = useState<FullExam[]>([]);
     const [error, setError] = useState<string | null>(null);
+    const [isLoading, setLoading] = useState(false);
 
 
 
     useEffect(() => {
         const token = getToken();
+        setLoading(true);
 
         if (!token) {
             setError('Missing auth credentials');
@@ -37,8 +37,13 @@ export default function DatedExamList({ date }: Props) {
             })
             .catch((err) => {
                 setError(err.message);
+            }).finally(() => {
+                setLoading(false)
             });
     }, [date]);
+
+
+
 
 
     const toggleOnline = (examID: string) => {
@@ -101,14 +106,18 @@ export default function DatedExamList({ date }: Props) {
 
     }
 
-
     return (
-        <div className="flex justify-center">
-            <div className="w-full max-w-7/8">
-                <h2>Exams on {formatWeekDate(date)}:</h2>
-                {error && <p style={{ color: 'red' }}>{error}</p>}
-                {exams.length === 0 ? (
-                    <p>There are no exams today!</p>
+        <div className="max-w-6/8 ml-auto mr-auto flex justify-center">
+            <div className="w-full max-w-8xl">
+                <p className="text-xl font-medium text-gray-700 text-center mb-5">Today's Exams:</p>
+                {isLoading ? (
+                    <div className="flex justify-center items-center h-64">
+                        <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
+                    </div>
+                ) : error ? (
+                    <p className="text-red-500">{error}</p>
+                ) : exams.length === 0 ? (
+                    <p></p>
                 ) : (
                     <div className="relative overflow-x-auto relative overflow-x-auto shadow-md sm:rounded-lg">
                         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -127,7 +136,7 @@ export default function DatedExamList({ date }: Props) {
                             </thead>
                             <tbody>
                                 {exams.map((fullExam) => (
-                                    <tr key={fullExam.exam.crn} className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200">
+                                    <tr key={fullExam.exam.crn} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
                                         <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                             {fullExam.user.fullname}
                                         </th>

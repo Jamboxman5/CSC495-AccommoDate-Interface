@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login, } from '../services/auth';
-
+import "./tailwind.css"
 export default function MyApp() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -54,7 +54,7 @@ export default function MyApp() {
           />
           <button
             onClick={handleLogin}
-            className="w-full !bg-blue-500 hover:text-gray-100 text-white py-2 px-4 rounded-lg hover:!bg-blue-600 transition-colors">Login</button>
+            className="w-full !bg-gradient-to-r from-blue-500 to-indigo-700 hover:text-gray-100 text-white py-2 px-4 rounded-lg hover:!bg-blue-600 transition-colors">Login</button>
         </div>
       </div>
     </div>

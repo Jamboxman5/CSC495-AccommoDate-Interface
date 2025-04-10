@@ -5,7 +5,8 @@ import { useEffect, useState } from 'react';
 import StudentExamList from '../components/StudentExamList';
 import DatedExamList from '../components/DatedExamList';
 import NavigationBar from '../components/NavigationBar';
-import AdminExamList from '../components/AdminExamList';
+import ExamBoard from '../components/ExamBoard';
+import "./tailwind.css"
 
 export default function HomePage() {
     
@@ -29,10 +30,10 @@ export default function HomePage() {
     }, []);
 
     return (
-        <div>
+        <div className='w-screen'>
             <NavigationBar/>
-            <h1>Welcome to AccommoDate!</h1>
-            <p>You are logged in as <strong>{role}</strong>.</p>
+            <h1 className="text-center">Welcome to AccommoDate!</h1>
+            <p className="text-center mt-10 mb-10">You are logged in as <strong>{role}</strong>.</p>
             
             {role === "ROLE_ADMIN" ? (
                 // <>
@@ -45,11 +46,10 @@ export default function HomePage() {
                 //     />
                 //     <DatedExamList date = {selectedDate} />
                 // </>
-                <AdminExamList date = {formatDate(new Date())}/>
+                <ExamBoard date = {formatDate(new Date())}/>
             ) : (
                 <StudentExamList/>
             )}
-            <button onClick={handleLogout}>Log Out</button>
         </div>
     )
 }

@@ -9,4 +9,5 @@ export interface Exam {
     examcomplete: boolean;
     examonline: boolean;
     examduration: number;
+    note: string;
 }

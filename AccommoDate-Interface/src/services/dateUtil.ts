@@ -5,6 +5,14 @@ export function formatDate(date: Date): string {
         return `${year}-${month}-${day}`;
     }
 
+    export function formatPrettyDate(date: string): string {
+        const parts = date.split('-');
+        const year = parts[0];
+        const month = parts[1];
+        const day = parts[2];
+        return `${month}/${day}/${year}`
+    }
+
     export function formatWeekDate(dateStr: string): string {
         const [year, month, day] = dateStr.split("-").map(Number);
         const localDate = new Date(year, month - 1, day); // month is 0-indexed

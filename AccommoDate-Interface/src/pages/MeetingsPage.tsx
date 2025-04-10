@@ -5,9 +5,10 @@ import { getUserRole } from "../services/auth";
 import { formatDate } from "../services/dateUtil";
 import StudentExamList from "../components/StudentExamList";
 import DatedExamList from "../components/DatedExamList";
+import UpcomingMeetingList from "../components/UpcomingMeetingList";
 import "./tailwind.css"
 
-export default function ExamsPage() {
+export default function MeetingsPage() {
     const navigate = useNavigate();
 
 
@@ -22,24 +23,11 @@ export default function ExamsPage() {
     }, []);
 
     return (
-        <div className="w-screen">
+        <div>
             <NavigationBar/>
-            <h1 className="w-full max-w-7/8">Browse Exams</h1>
+            <h1>Meetings</h1>
             
-            {role === "ROLE_ADMIN" ? (
-                <>
-                    <label className="w-full max-w-7/8" htmlFor="exam-date">Choose a date: </label>
-                    <input
-                        type = "date"
-                        id = "exam-date"
-                        value = {selectedDate}
-                        onChange={(e) => setSelectedDate(e.target.value)}
-                    />
-                    <DatedExamList date = {selectedDate} />
-                </>
-            ) : (
-                <StudentExamList/>
-            )}
+            <UpcomingMeetingList/>
         </div>
     )
 }

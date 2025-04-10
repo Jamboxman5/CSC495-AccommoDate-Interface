@@ -6,5 +6,6 @@ export interface Course {
     meettime: string;
     instructor: string;
     instructoremail: string;
+    coursename: string;
     meetduration: number;
   }
