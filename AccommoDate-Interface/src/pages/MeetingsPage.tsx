@@ -5,7 +5,7 @@ import { getUserRole } from "../services/auth";
 import { formatDate } from "../services/dateUtil";
 import StudentExamList from "../components/StudentExamList";
 import DatedExamList from "../components/DatedExamList";
-import UpcomingMeetingList from "../components/UpcomingMeetingList";
+import MeetingList from "../components/MeetingList";
 import "./tailwind.css"
 
 export default function MeetingsPage() {
@@ -27,7 +27,11 @@ export default function MeetingsPage() {
             <NavigationBar/>
             <h1>Meetings</h1>
             
-            <UpcomingMeetingList/>
+            <h2>Upcoming Meetings:</h2>
+            <MeetingList pastUpcoming="upcoming"/>
+            <br/>
+            <h2>Past Meetings:</h2>
+            <MeetingList pastUpcoming="past"/>
         </div>
     )
 }

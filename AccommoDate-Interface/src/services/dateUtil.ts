@@ -13,6 +13,12 @@ export function formatDate(date: Date): string {
         return `${month}/${day}/${year}`
     }
 
+    export function getMonday(date: Date): Date {
+        var weekday = date.getDay();
+        date.setDate(date.getDate() - weekday + 1)
+        return date;
+    }
+
     export function formatWeekDate(dateStr: string): string {
         const [year, month, day] = dateStr.split("-").map(Number);
         const localDate = new Date(year, month - 1, day); // month is 0-indexed

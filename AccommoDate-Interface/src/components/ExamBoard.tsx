@@ -81,13 +81,12 @@ export default function ExamBoard({ date }: Props) {
     };
 
     const handleCompleteToggle = (examID: string, isComplete: boolean) => {
-        if (isComplete) {
-            const confirm = window.confirm("Are you sure you want to mark this exam as incomplete?");
-            if (!confirm) return;
-        } else {
-            const confirm = window.confirm("Are you sure you want to mark this exam as complete?");
-            if (!confirm) return;
-        }
+        const message = isComplete ? 
+        "Are you sure you want to mark this exam as incomplete?" : 
+        "Are you sure you want to mark this exam as complete?";
+
+        const confirmed = window.confirm(message);
+        if (!confirmed) return;
 
         const updatedExams = exams.map((exam) => {
             if (exam.exam.examid === examID) {
@@ -104,11 +103,36 @@ export default function ExamBoard({ date }: Props) {
 
         setExams(updatedExams);
 
+        const updatedExam = exams.find((exam) => exam.exam.examid === examID );
+        console.log(updatedExam?.exam.examcomplete)
+
+        fetch(`http://localhost:8080/api/exam/update`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${getToken()}`,
+            },
+            body: JSON.stringify(updatedExam?.exam), // send only the exam portion
+        })
+            .then((res) => {
+                if (!res.ok) {
+                    throw new Error("Failed to update exam");
+                }
+                return res.json();
+            })
+            .then((data) => {
+                console.log("Exam updated:", data);
+            })
+            .catch((err) => {
+                console.error("Error updating exam:", err);
+                setError("Failed to update exam on the server.");
+            });
+
     }
 
     return (
         <div className="max-w-6/8 ml-auto mr-auto flex justify-center">
-            <div className="w-full max-w-8xl">
+            <div className="w-full max-w-8xl ">
                 <p className="text-xl font-medium text-gray-700 text-center mb-5">Today's Exams:</p>
                 {isLoading ? (
                     <div className="flex justify-center items-center h-64">
@@ -123,7 +147,8 @@ export default function ExamBoard({ date }: Props) {
                         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                             <thead className="text-xs text-gray-100 uppercase bg-gradient-to-l from-blue-400 to-indigo-500">
                                 <tr>
-                                    <th scope="col" className="px-6 py-3">Student</th>
+                                <th scope="col" className="px-6 py-3"></th>
+                                <th scope="col" className="px-6 py-3">Student</th>
                                     <th scope="col" className="px-6 py-3">Course</th>
                                     <th scope="col" className="px-6 py-3">Start Time</th>
                                     <th scope="col" className="px-6 py-3">Location</th>
@@ -131,18 +156,24 @@ export default function ExamBoard({ date }: Props) {
                                     <th scope="col" className="px-6 py-3">End Time</th>
                                     <th scope="col" className="px-6 py-3">Accommodations</th>
                                     <th scope="col" className="px-6 py-3">Online?</th>
-                                    <th scope="col" className="px-6 py-3">Complete?</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {exams.map((fullExam) => (
-                                    <tr key={fullExam.exam.crn} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
+                                    <tr key={fullExam.exam.examid} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
+                                        <th scope="row" className="px-6 py-4 text-center">
+                                        <input
+                                                type="checkbox"
+                                                checked={fullExam.exam.examcomplete}
+                                                onChange={() => handleCompleteToggle(fullExam.exam.examid, fullExam.exam.examcomplete)}
+                                            />                                        </th>
                                         <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                             {fullExam.user.fullname}
                                         </th>
+
                                         <td className="px-6 py-4">{fullExam.course.courseid}</td>
                                         <td className="px-6 py-4">{formatTime(fullExam.exam.examtime)}</td>
-                                        <td className="px-6 py-4">{fullExam.exam.examlocation}</td>
+                                        <td className="px-6 py-4">{fullExam.exam.examdate}</td>
                                         <td className="px-6 py-4">{fullExam.course.meetdays}</td>
                                         <td className="px-6 py-4">{getCourseEndTime(fullExam.exam.examtime, fullExam.exam.examduration * fullExam.user.timeextension)}</td>
                                         <td className="px-6 py-4">{getAccommodationString(fullExam.user)}</td>
@@ -153,13 +184,7 @@ export default function ExamBoard({ date }: Props) {
                                                 onChange={() => toggleOnline(fullExam.exam.examid)}
                                             />
                                         </td>
-                                        <td className="px-6 py-4 text-center">
-                                            <input
-                                                type="checkbox"
-                                                checked={fullExam.exam.examcomplete}
-                                                onChange={() => handleCompleteToggle(fullExam.exam.examid, fullExam.exam.examcomplete)}
-                                            />
-                                        </td>
+                                        
                                     </tr>
                                 ))}
                             </tbody>
