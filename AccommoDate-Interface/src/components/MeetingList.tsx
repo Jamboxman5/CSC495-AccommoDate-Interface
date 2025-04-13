@@ -11,7 +11,7 @@ type Props = {
 }
 
 export default function MeetingList({pastUpcoming}: Props) {
-    const [exams, setMeetings] = useState<FullMeeting[]>([]);
+    const [meetings, setMeetings] = useState<FullMeeting[]>([]);
     const [error, setError] = useState<string | null>(null);
 
     var date = formatDate(new Date());
@@ -71,28 +71,29 @@ export default function MeetingList({pastUpcoming}: Props) {
         return (
             <div>
                 {error && <p style={{ color: 'red' }}>{error}</p>}
-                {exams.length === 0 ? (
-                    <p>You have no {pastUpcoming} meetings.</p>
-                ) : (
-                    <div className="relative overflow-x-auto">
+                {meetings.length === 0 ? (
+                    
+                        <p className="text-l pt-5 pb-5 text-center mb-5 font-semibold text-gray-200">You have no {pastUpcoming} meetings.</p>
+                    ) : (
+                    <div className="relative overflow-x-auto rounded-lg shadow-lg">
                         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                             <thead className="text-xs text-gray-100 uppercase bg-gradient-to-l from-blue-400 to-indigo-500 dark:bg-gray-700 dark:text-gray-400">
                                 <tr>
-                                    <th scope="col" className="px-6 py-3">Meeting with</th>
-                                    <th scope="col" className="px-6 py-3">Date</th>
-                                    <th scope="col" className="px-6 py-3">Time</th>
-                                    <th scope="col" className="px-6 py-3">Virtual / In Person</th>
+                                    <th scope="col" className="text-center px-6 py-3">Meeting with</th>
+                                    <th scope="col" className="text-center px-6 py-3">Date</th>
+                                    <th scope="col" className="text-center px-6 py-3">Time</th>
+                                    <th scope="col" className="text-center px-6 py-3">Virtual / In Person</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                {exams.map((fullMeeting) => (
-                                    <tr key={fullMeeting.meeting.meetingid} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
-                                        <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white text-center">
+                            <tbody className="className=divide-y">
+                                {meetings.map((fullMeeting) => (
+                                    <tr key={fullMeeting.meeting.meetingid} className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-100 even:dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200">
+                                        <th scope="row" className="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap dark:text-white text-center">
                                             {fullMeeting.user.preferredname + " " + fullMeeting.user.fullname.split(" ")[1]}<br></br>{fullMeeting.user.title}
                                         </th>
-                                        <td className="px-6 py-4">{formatPrettyDate(fullMeeting.meeting.meetdate)}</td>
-                                        <td className="px-6 py-4">{formatTime(fullMeeting.meeting.meettime)}</td>
-                                        <td className="px-6 py-4">{fullMeeting.meeting.virtual ? ("Virtual") : ("In Person")}</td>
+                                        <td className="text-center px-6 py-4">{formatPrettyDate(fullMeeting.meeting.meetdate)}</td>
+                                        <td className="text-center px-6 py-4">{formatTime(fullMeeting.meeting.meettime)}</td>
+                                        <td className="text-center px-6 py-4">{fullMeeting.meeting.virtual ? ("Virtual") : ("In Person")}</td>
 
                                     </tr>
                                 ))}
@@ -108,28 +109,28 @@ export default function MeetingList({pastUpcoming}: Props) {
         return (
             <div>
                 {error && <p style={{ color: 'red' }}>{error}</p>}
-                {exams.length === 0 ? (
-                    <p>You have no {pastUpcoming} meetings.</p>
-                ) : (
-                    <div className="relative overflow-x-auto">
+                {meetings.length === 0 ? (
+                        <p className="text-l pt-5 pb-5 text-center mb-5 font-semibold text-gray-200">You have no {pastUpcoming} meetings.</p>
+                    ) : (
+                    <div className="relative overflow-x-auto rounded-lg shadow-lg">
                         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                             <thead className="bg-gradient-to-l from-blue-400 to-indigo-500 text-xs text-gray-100 uppercase dark:bg-gray-700 dark:text-gray-400">
                                 <tr>
-                                    <th scope="col" className="px-6 py-3">Meeting with</th>
-                                    <th scope="col" className="px-6 py-3">Date</th>
-                                    <th scope="col" className="px-6 py-3">Time</th>
-                                    <th scope="col" className="px-6 py-3">Virtual / In Person</th>
+                                    <th scope="col" className="px-6 py-3 text-center">{pastUpcoming === "past" ? ("Met") : ("Meeting")} with</th>
+                                    <th scope="col" className="px-6 py-3 text-center">Date</th>
+                                    <th scope="col" className="px-6 py-3 text-center">Time</th>
+                                    <th scope="col" className="px-6 py-3 text-center">Virtual / In Person</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                {exams.map((fullMeeting) => (
-                                    <tr key={fullMeeting.meeting.meetingid} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
-                                        <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white text-center">
+                            <tbody className="className=divide-y">
+                                {meetings.map((fullMeeting) => (
+                                    <tr key={fullMeeting.meeting.meetingid} className=" even:bg-gray-700 odd:bg-gray-800 border-b dark:border-gray-600">
+                                        <th scope="row" className="px-6 py-4 font-medium whitespace-nowrap text-white text-center">
                                             {fullMeeting.admin.preferredname + " " + fullMeeting.admin.fullname.split(" ")[1]}<br></br>{fullMeeting.admin.title}
                                         </th>
-                                        <td className="px-6 py-4">{formatPrettyDate(fullMeeting.meeting.meetdate)}</td>
-                                        <td className="px-6 py-4">{formatTime(fullMeeting.meeting.meettime)}</td>
-                                        <td className="px-6 py-4">{fullMeeting.meeting.virtual ? ("Virtual") : ("In Person")}</td>
+                                        <td className="text-center text-white px-6 py-4">{formatPrettyDate(fullMeeting.meeting.meetdate)}</td>
+                                        <td className="text-center text-white px-6 py-4">{formatTime(fullMeeting.meeting.meettime)}</td>
+                                        <td className="text-center text-white px-6 py-4">{fullMeeting.meeting.virtual ? ("Virtual") : ("In Person")}</td>
 
                                     </tr>
                                 ))}

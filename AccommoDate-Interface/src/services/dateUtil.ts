@@ -8,15 +8,35 @@ export function formatDate(date: Date): string {
     export function formatPrettyDate(date: string): string {
         const parts = date.split('-');
         const year = parts[0];
-        const month = parts[1];
-        const day = parts[2];
+        var month = parts[1];
+        if (month.startsWith("0")) month = month.charAt(1);
+        var day = parts[2];
+        if (day.startsWith("0")) day = day.charAt(1);
         return `${month}/${day}/${year}`
+    }
+
+    export function formatYearlessPrettyDate(date: string): string {
+        const parts = date.split('-');
+        var month = parts[1];
+        if (month.startsWith("0")) month = month.charAt(1);
+        var day = parts[2];
+        if (day.startsWith("0")) day = day.charAt(1);
+        return `${month}/${day}`
     }
 
     export function getMonday(date: Date): Date {
         var weekday = date.getDay();
         date.setDate(date.getDate() - weekday + 1)
         return date;
+    }
+
+    export function getWeekDay(date: Date, day: number): string {
+        var weekday = date.getDay();
+        date.setDate(date.getDate() - weekday + day)
+        
+        return date.toLocaleDateString(undefined, {
+            weekday: "long"
+        }) + " " + formatYearlessPrettyDate(formatDate(date));
     }
 
     export function formatWeekDate(dateStr: string): string {
