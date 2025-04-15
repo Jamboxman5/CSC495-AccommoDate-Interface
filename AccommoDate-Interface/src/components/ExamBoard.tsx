@@ -22,7 +22,7 @@ export default function ExamBoard({ date }: Props) {
             setError('Missing auth credentials');
             return;
         }
-        fetch(`http://localhost:8080/api/exam/getbydate/${date}`, {
+        fetch(`http://localhost:8080/api/exam/getforboard/${date}`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -63,22 +63,6 @@ export default function ExamBoard({ date }: Props) {
         setExams(updatedExams);
     };
 
-    const toggleComplete = (examID: string) => {
-        const updatedExams = exams.map((exam) => {
-            if (exam.exam.examid === examID) {
-                return {
-                    ...exam,
-                    exam: {
-                        ...exam.exam,
-                        examcomplete: !exam.exam.examcomplete,
-                    },
-                };
-            }
-            return exam;
-        });
-
-        setExams(updatedExams);
-    };
 
     const handleCompleteToggle = (examID: string, isComplete: boolean) => {
         const message = isComplete ?
@@ -90,13 +74,7 @@ export default function ExamBoard({ date }: Props) {
 
         const updatedExams = exams.map((exam) => {
             if (exam.exam.examid === examID) {
-                return {
-                    ...exam,
-                    exam: {
-                        ...exam.exam,
-                        examcomplete: !exam.exam.examcomplete,
-                    },
-                };
+                exam.exam.examcomplete = !exam.exam.examcomplete;
             }
             return exam;
         });

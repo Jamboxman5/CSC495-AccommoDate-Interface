@@ -55,7 +55,7 @@ export default function App() {
             </ProtectedRoute>
           } 
         />
-         <Route path="/" element={<App />}></Route>
+        <Route path="/" element={<Navigate to={getToken() ? '/home' : '/login'} />} />
         <Route path="*" element={<Navigate to={getToken() ? '/home' : '/login'} />} />
         </Routes>
     </>

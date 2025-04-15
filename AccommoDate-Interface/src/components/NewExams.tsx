@@ -5,12 +5,8 @@ import { FullExam } from "../interfaces/FullExam";
 import { getCourseEndTime } from "../services/dateUtil";
 import { getAccommodationString } from "../services/textUtil";
 import "./tailwind.css";
-import { Exam } from "../interfaces/Exam";
-type Props = {
-    date: string;
-}
 
-export default function DatedExamList({ date }: Props) {
+export default function NewExams() {
     const [exams, setExams] = useState<FullExam[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setLoading] = useState(false);
@@ -25,7 +21,7 @@ export default function DatedExamList({ date }: Props) {
             setError('Missing auth credentials');
             return;
         }
-        fetch(`http://localhost:8080/api/exam/getbydate/${date}`, {
+        fetch(`http://localhost:8080/api/exam/getnew`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -43,37 +39,40 @@ export default function DatedExamList({ date }: Props) {
             }).finally(() => {
                 setLoading(false);
             });
-    }, [date]);
+    }, []);
 
 
-    const toggleOnline = (examID: string) => {
-        const updatedExams = exams.map((exam) => {
-            if (exam.exam.examid === examID) {
-                return {
-                    ...exam,
-                    exam: {
-                        ...exam.exam,
-                        examonline: !exam.exam.examonline,
-                    },
-                };
+    const handleRequest = async (examId: string) => {
+        try {
+            const response = await fetch(`http://localhost:8080/api/exam/request/${examId}`, {
+                method: 'GET',
+                headers: {
+                    Authorization: `Bearer ${getToken()}`,
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error('Request failed');
             }
-            return exam;
-        });
 
-        setExams(updatedExams);
+            alert('Request sent successfully!');
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Failed to send request.');
+        }
     };
 
-    const handleCompleteToggle = (examID: string, isComplete: boolean) => {
-        const message = isComplete ?
-            "Are you sure you want to mark this exam as incomplete?" :
-            "Are you sure you want to mark this exam as complete?";
+    const handlePendingToggle = (examID: string, isRequested: boolean) => {
+        const message = isRequested ?
+            "Are you sure you want to mark this exam as requested?" :
+            "Are you sure you want to unmark this exam as requested?";
 
         const confirmed = window.confirm(message);
         if (!confirmed) return;
 
         const updatedExams = exams.map((exam) => {
             if (exam.exam.examid === examID) {
-                exam.exam.examcomplete = !exam.exam.examcomplete;
+                exam.exam.examrequested = !exam.exam.examrequested;
             }
             return exam;
         });
@@ -81,7 +80,7 @@ export default function DatedExamList({ date }: Props) {
         setExams(updatedExams);
 
         const updatedExam = exams.find((exam) => exam.exam.examid === examID);
-        console.log(updatedExam?.exam.examcomplete)
+        console.log(updatedExam?.exam.examrequested)
 
         fetch(`http://localhost:8080/api/exam/update`, {
             method: "PUT",
@@ -107,12 +106,6 @@ export default function DatedExamList({ date }: Props) {
 
     }
 
-    const getStatus = (exam: Exam): string => {
-        if (exam.examconfirmed) return "Confirmed";
-        else if (exam.examrequested) return "Pending";
-        else return "New";
-    }
-
 
     return (
         <div>
@@ -124,21 +117,21 @@ export default function DatedExamList({ date }: Props) {
                 <p className="text-red-500 text-center">{error}</p>
             ) : exams.length === 0 ? (
 
-                <p className="text-l pt-5 pb-5 text-center mb-5 font-semibold text-gray-200">No exams on {formatPrettyDate(date)}.</p>
+                <p className="text-l pt-5 pb-5 text-center mb-5 font-semibold text-gray-200">No More New Exams.</p>
             ) : (
                 <div className="max-w-6/8 ml-auto mr-auto relative overflow-x-auto rounded-lg shadow-lg">
                     <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                         <thead className="bg-gradient-to-l from-blue-400 to-indigo-500 text-xs text-gray-100 uppercase dark:bg-gray-700 dark:text-gray-400">
                             <tr>
-                            <th scope="col" className="px-6 py-3 text-center">Mark As<br/>Complete</th>
+                            <th scope="col" className="px-6 py-3 text-center">Mark As<br/>Pending</th>
                             <th scope="col" className="px-6 py-3 text-center">Student</th>
                             <th scope="col" className="px-6 py-3 text-center">Course</th>
                             <th scope="col" className="px-6 py-3 text-center">Section</th>
                             <th scope="col" className="px-6 py-3 text-center">CRN</th>
-                            <th scope="col" className="px-6 py-3 text-center">Date</th>
+                                <th scope="col" className="px-6 py-3 text-center">Date</th>
                                 <th scope="col" className="px-6 py-3 text-center">Time</th>
                                 <th scope="col" className="px-6 py-3 text-center">Online?</th>
-                                <th scope="col" className="px-6 py-3 text-center">Status</th>
+                                <th scope="col" className="px-6 py-3 text-center">Request<br/>Exam</th>
                             </tr>
                         </thead>
                         <tbody className="className=divide-y">
@@ -147,8 +140,8 @@ export default function DatedExamList({ date }: Props) {
                                     <td className="text-center text-white px-6 py-4">
                                     <input
                                                     type="checkbox"
-                                                    checked={fullExam.exam.examcomplete}
-                                                    onChange={() => handleCompleteToggle(fullExam.exam.examid, fullExam.exam.examcomplete)}
+                                                    checked={fullExam.exam.examrequested}
+                                                    onChange={() => handlePendingToggle(fullExam.exam.examid, fullExam.exam.examrequested)}
                                                 /> 
                                     </td>
                                     <th scope="row" className="px-6 py-4 font-medium whitespace-nowrap text-white text-center">
@@ -159,11 +152,18 @@ export default function DatedExamList({ date }: Props) {
                                     </th>
                                     <td className="text-center text-white px-6 py-4">{fullExam.course.sectionnum}</td>
                                     <td className="text-center text-white px-6 py-4">{fullExam.course.crn}</td>
-                                    <td className="text-center text-white px-6 py-4">{formatPrettyDate(fullExam.exam.examdate)}</td>
-                                    <td className="text-center text-white px-6 py-4">{formatTime(fullExam.exam.examtime)} - {getCourseEndTime(fullExam.exam.examtime, fullExam.exam.examduration)}</td>
-                                    <td className="text-center text-white px-6 py-4">{fullExam.exam.examonline ? ("Online") : ("")}</td>
-                                    <td className="text-center text-white px-6 py-4">{getStatus(fullExam.exam)}</td>
 
+                                    <td className="text-center text-white px-6 py-4">{formatPrettyDate(fullExam.exam.examdate)}</td>
+                                    <td className="text-center text-white px-6 py-4">{formatTime(fullExam.exam.examtime)} - {getCourseEndTime(fullExam.exam.examtime, fullExam.exam.examduration * fullExam.user.timeextension)}</td>
+                                    <td className="text-center text-white px-6 py-4">{fullExam.exam.examonline ? ("Online") : ("")}</td>
+                                    <td className="text-center text-white px-6 py-4">
+                                        <button
+                                            onClick={() => handleRequest(fullExam.exam.examid)}
+                                            className="!bg-blue-500 hover:!bg-blue-600 text-white text-xs font-semibold py-1 px-3 rounded-lg transition duration-200"
+                                        >
+                                            Request
+                                        </button>
+                                    </td>
                                 </tr>
                             ))}
                         </tbody>

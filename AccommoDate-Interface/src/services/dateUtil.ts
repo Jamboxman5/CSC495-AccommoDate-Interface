@@ -31,7 +31,9 @@ export function formatDate(date: Date): string {
     }
 
     export function getWeekDay(date: Date, day: number): string {
+        console.log(date)
         var weekday = date.getDay();
+        console.log(weekday)
         date.setDate(date.getDate() - weekday + day)
         
         return date.toLocaleDateString(undefined, {

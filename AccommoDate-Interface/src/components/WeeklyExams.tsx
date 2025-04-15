@@ -19,11 +19,11 @@ const timeToPixels = (time: string) => {
 };
 
 export default function WeeklySchedule({ date }: Props) {
-    const weekdays = [getWeekDay(new Date(date), 1), 
-        getWeekDay(new Date(date), 2), 
-        getWeekDay(new Date(date), 3), 
-        getWeekDay(new Date(date), 4), 
-        getWeekDay(new Date(date), 5)
+    const weekdays = [getWeekDay(new Date(), 1), 
+        getWeekDay(new Date(), 2), 
+        getWeekDay(new Date(), 3), 
+        getWeekDay(new Date(), 4), 
+        getWeekDay(new Date(), 5)
     ];
 
     const [exams, setExams] = useState<FullExam[]>([]);
@@ -43,8 +43,8 @@ export default function WeeklySchedule({ date }: Props) {
                 }
 
                 const inputDate = parseISO(date);
-                const start = format(startOfWeek(inputDate, { weekStartsOn: 1 }), "yyyy-MM-dd");
-                const end = format(endOfWeek(inputDate, { weekStartsOn: 1 }), "yyyy-MM-dd");
+                const start = format(startOfWeek(inputDate, { weekStartsOn: 0 }), "yyyy-MM-dd");
+                const end = format(endOfWeek(inputDate, { weekStartsOn: 0 }), "yyyy-MM-dd");
 
                 const response = await fetch(`http://localhost:8080/api/exam/getbetween/${getID()}?start=${start}&end=${end}`, {
                     headers: {

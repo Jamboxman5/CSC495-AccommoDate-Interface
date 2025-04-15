@@ -8,6 +8,7 @@ export interface Exam {
     examconfirmed: boolean;
     examcomplete: boolean;
     examonline: boolean;
+    examrequested: boolean;
     examduration: number;
     note: string;
 }
