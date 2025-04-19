@@ -2,8 +2,6 @@ import { useEffect, useState } from "react";
 import { getToken, getID } from "../services/auth";
 import { getFormattedTime, getCourseEndTime } from "../services/dateUtil";
 import { Course } from "../interfaces/Course";
-import { getOrganizationDomain } from "../services/config";
-// import "./CourseDirectory.css";
 
 export default function MyCourses() {
     const [courses, setCourses] = useState<Course[]>([]);
@@ -12,7 +10,7 @@ export default function MyCourses() {
 
     useEffect(() => {
         const token = getToken();
-        const userId = getID(); // stored at login
+        const userId = getID(); 
 
         if (!token || !userId) {
             setError('Missing auth credentials');
@@ -73,7 +71,7 @@ export default function MyCourses() {
                             </thead>
                             <tbody className="className=divide-y">
                                 {courses.map((course) => (
-                                    <tr key={course.crn} className=" even:bg-gray-700 odd:bg-gray-800 border-b dark:border-gray-600">
+                                    <tr key={course.crn} className=" even:bg-gray-700 odd:bg-gray-800 border-b border-gray-700">
                                         <th scope="row" className="px-6 py-4 text-center font-medium text-gray-100 whitespace-nowrap dark:text-white text-center">
                                             {course.courseid}<br/>{course.coursename}
                                         </th>

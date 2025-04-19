@@ -1,44 +1,23 @@
 import { useEffect, useState } from "react";
 import { getToken } from "../services/auth";
-import { formatWeekDate, formatPrettyDate, formatTime, formatDate } from "../services/dateUtil";
+import { formatPrettyDate, formatTime } from "../services/dateUtil";
 import { FullExam } from "../interfaces/FullExam";
+import { Exam } from "../interfaces/Exam";
 import { getCourseEndTime } from "../services/dateUtil";
-import { getAccommodationString } from "../services/textUtil";
+import EditExamModal from "./EditExamModal";
 import "./tailwind.css";
 
 export default function NewExams() {
     const [exams, setExams] = useState<FullExam[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setLoading] = useState(false);
+    const [showModal, setShowModal] = useState(false);
+    const [editingExam, setEditingExam] = useState<Exam | null>(null);
 
 
 
     useEffect(() => {
-        const token = getToken();
-        setLoading(true);
-
-        if (!token) {
-            setError('Missing auth credentials');
-            return;
-        }
-        fetch(`http://localhost:8080/api/exam/getnew`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-            },
-        })
-            .then((res) => {
-                if (!res.ok) throw new Error('Failed to fetch exams');
-                return res.json();
-            })
-            .then((data: FullExam[]) => {
-                setExams(data);
-            })
-            .catch((err) => {
-                setError(err.message);
-            }).finally(() => {
-                setLoading(false);
-            });
+        loadExams();
     }, []);
 
 
@@ -88,13 +67,12 @@ export default function NewExams() {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${getToken()}`,
             },
-            body: JSON.stringify(updatedExam?.exam), // send only the exam portion
+            body: JSON.stringify(updatedExam?.exam),
         })
             .then((res) => {
                 if (!res.ok) {
                     throw new Error("Failed to update exam");
                 }
-                return res.json();
             })
             .then((data) => {
                 console.log("Exam updated:", data);
@@ -106,6 +84,33 @@ export default function NewExams() {
 
     }
 
+    const loadExams = () => {
+        const token = getToken();
+        setLoading(true);
+
+        if (!token) {
+            setError('Missing auth credentials');
+            return;
+        }
+        fetch(`http://localhost:8080/api/exam/getnew`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        })
+            .then((res) => {
+                if (!res.ok) throw new Error('Failed to fetch exams');
+                return res.json();
+            })
+            .then((data: FullExam[]) => {
+                setExams(data);
+            })
+            .catch((err) => {
+                setError(err.message);
+            }).finally(() => {
+                setLoading(false);
+            });
+    }
 
     return (
         <div>
@@ -119,30 +124,31 @@ export default function NewExams() {
 
                 <p className="text-l pt-5 pb-5 text-center mb-5 font-semibold text-gray-200">No More New Exams.</p>
             ) : (
-                <div className="max-w-6/8 ml-auto mr-auto relative overflow-x-auto rounded-lg shadow-lg">
+                <div className="max-w-10/12 ml-auto mr-auto relative overflow-x-auto rounded-lg shadow-lg">
                     <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                         <thead className="bg-gradient-to-l from-blue-400 to-indigo-500 text-xs text-gray-100 uppercase dark:bg-gray-700 dark:text-gray-400">
                             <tr>
-                            <th scope="col" className="px-6 py-3 text-center">Mark As<br/>Pending</th>
-                            <th scope="col" className="px-6 py-3 text-center">Student</th>
-                            <th scope="col" className="px-6 py-3 text-center">Course</th>
-                            <th scope="col" className="px-6 py-3 text-center">Section</th>
-                            <th scope="col" className="px-6 py-3 text-center">CRN</th>
+                                <th scope="col" className="px-6 py-3 text-center">Mark As<br />Pending</th>
+                                <th scope="col" className="px-6 py-3 text-center">Student</th>
+                                <th scope="col" className="px-6 py-3 text-center">Course</th>
+                                <th scope="col" className="px-6 py-3 text-center">Section</th>
+                                <th scope="col" className="px-6 py-3 text-center">CRN</th>
                                 <th scope="col" className="px-6 py-3 text-center">Date</th>
                                 <th scope="col" className="px-6 py-3 text-center">Time</th>
-                                <th scope="col" className="px-6 py-3 text-center">Online?</th>
-                                <th scope="col" className="px-6 py-3 text-center">Request<br/>Exam</th>
+                                <th scope="col" className="px-6 py-3 text-center"></th>
+                                <th scope="col" className="px-6 py-3 text-center">Request<br />Exam</th>
+                                <th scope="col" className="px-6 py-3 text-center"></th>
                             </tr>
                         </thead>
                         <tbody className="className=divide-y">
                             {exams.map((fullExam) => (
-                                <tr key={fullExam.exam.examid} className=" even:bg-gray-700 odd:bg-gray-800 border-b dark:border-gray-600">
+                                <tr key={fullExam.exam.examid} className=" even:bg-gray-700 odd:bg-gray-800 border-b border-gray-700">
                                     <td className="text-center text-white px-6 py-4">
-                                    <input
-                                                    type="checkbox"
-                                                    checked={fullExam.exam.examrequested}
-                                                    onChange={() => handlePendingToggle(fullExam.exam.examid, fullExam.exam.examrequested)}
-                                                /> 
+                                        <input
+                                            type="checkbox"
+                                            checked={fullExam.exam.examrequested}
+                                            onChange={() => handlePendingToggle(fullExam.exam.examid, fullExam.exam.examrequested)}
+                                        />
                                     </td>
                                     <th scope="row" className="px-6 py-4 font-medium whitespace-nowrap text-white text-center">
                                         {fullExam.user.fullname}
@@ -164,10 +170,33 @@ export default function NewExams() {
                                             Request
                                         </button>
                                     </td>
+                                    <td className="text-center text-white px-6 py-4">
+
+                                        <button
+                                            onClick={() => { setShowModal(true); setEditingExam(fullExam.exam) }}
+                                            className="!bg-transparent hover:!bg-blue-600 text-white text-xs font-semibold py-1 px-3 rounded-lg transition duration-200"
+                                        >
+                                            Edit
+                                        </button>
+
+                                    </td>
                                 </tr>
+
                             ))}
                         </tbody>
                     </table>
+                    {editingExam && (
+                        <EditExamModal
+                            isOpen={showModal}
+                            editing={editingExam}
+                            onClose={() => {
+                                setShowModal(false);
+                                setEditingExam(null);
+                                loadExams();
+                            }}
+                        />
+                    )}
+
                 </div>
 
             )}

@@ -10,12 +10,12 @@ type Props = {
 
 const verticalScale = 120;
 
-const hours = Array.from({ length: 12 }, (_, i) => 7 + i); // 7 AM to 5 PM
+const hours = Array.from({ length: 12 }, (_, i) => 7 + i);
 
 const timeToPixels = (time: string) => {
     const [hour, minute] = time.split(":").map(Number);
     const minutesSinceStart = (hour * 60 + minute) - (7 * 60);
-    return (minutesSinceStart / 60) * verticalScale; // 1 hour = 60px
+    return (minutesSinceStart / 60) * verticalScale; 
 };
 
 export default function WeeklySchedule({ date }: Props) {
@@ -74,8 +74,8 @@ export default function WeeklySchedule({ date }: Props) {
 
     exams.forEach((exam) => {
         const examDate = parseISO(exam.exam.examdate);
-        const dayIndex = getDay(examDate); // Sunday = 0
-        const day = weekdays[dayIndex - 1]; // Adjust to Monday = 0
+        const dayIndex = getDay(examDate);
+        const day = weekdays[dayIndex - 1]; 
 
         if (groupedByDay[day]) {
             groupedByDay[day].push(exam);
@@ -94,7 +94,6 @@ export default function WeeklySchedule({ date }: Props) {
                 <p className="text-red-500 text-center">{error}</p>
             ) : (
                 <>
-                    {/* Sticky weekday header */}
                     <div className="flex h-[40px] sticky top-0 z-10 bg-gradient-to-l from-blue-400 to-indigo-500 text-white font-semibold text-sm">
                         <div className="w-16" />
                         {weekdays.map((day) => (
@@ -104,10 +103,8 @@ export default function WeeklySchedule({ date }: Props) {
                         ))}
                     </div>
 
-                    {/* Scrollable calendar body */}
                     <div className="overflow-y-auto bg-gray-700" style={{ maxHeight: "600px" }}>
                         <div className="flex">
-                            {/* Time column */}
                             <div className="w-16 flex flex-col border-r border-gray-500">
                                 {hours.map((hour) => (
                                     <div
@@ -120,11 +117,9 @@ export default function WeeklySchedule({ date }: Props) {
                                 ))}
                             </div>
 
-                            {/* Weekday columns */}
                             <div className="flex flex-1">
                                 {weekdays.map((day) => (
                                     <div key={day} className="flex-1 border-r relative border-gray-500">
-                                        {/* Hour lines */}
                                         {hours.map((_, i) => (
                                             <div
                                                 key={i}
@@ -133,7 +128,6 @@ export default function WeeklySchedule({ date }: Props) {
                                             />
                                         ))}
 
-                                        {/* Exams */}
                                         {groupedByDay[day].map((exam) => {
                                             const top = timeToPixels(exam.exam.examtime);
                                             const durationMinutes = exam.exam.examduration * exam.user.timeextension;

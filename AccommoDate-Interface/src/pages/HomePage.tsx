@@ -1,9 +1,6 @@
-import { useNavigate } from 'react-router-dom';
-import { getUserRole, logout } from '../services/auth';
+import { getUserRole } from '../services/auth';
 import { formatDate } from '../services/dateUtil';
 import { useEffect, useState } from 'react';
-import StudentExamList from '../components/StudentExamList';
-import DatedExamList from '../components/DatedExamList';
 import NavigationBar from '../components/NavigationBar';
 import ExamBoard from '../components/ExamBoard';
 import "./tailwind.css"
@@ -11,25 +8,16 @@ import WeeklySchedule from '../components/WeeklyExams';
 
 export default function HomePage() {
 
-    const navigate = useNavigate();
-
-    const handleLogout = () => {
-        logout();
-        navigate('/login');
-    };
-
-
-
     const [role, setRole] = useState<string | null>(null);
-    const [selectedDate, setSelectedDate] = useState(() => {
-        return formatDate(new Date());
-    });
 
     useEffect(() => {
         const userRole = getUserRole();
         setRole(userRole)
     }, []);
 
+    useEffect(() => {
+        document.title = "Home - AccommoDate"
+      });
     return (
         <div className="">
             <div className='w-screen bg-gradient-to-br from-indigo-600 to-orange-400 pt-40 min-h-screen'>

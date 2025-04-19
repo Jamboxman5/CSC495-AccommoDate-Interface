@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login, } from '../services/auth';
 import "./tailwind.css"
@@ -16,11 +16,6 @@ export default function MyApp() {
 
       const username = email.split("@")[0];
 
-      //   console.log('Sending request to login:', {
-      //     email: email.split('@')[0],
-      //     password
-      //   });
-
       await login(username, password);
       navigate('/home');
 
@@ -32,6 +27,10 @@ export default function MyApp() {
       alert(err);
     }
   };
+
+  useEffect(() => {
+    document.title = "Login - AccommoDate"
+  });
 
   return (
     <div className="bg-gradient-to-br from-indigo-600 to-orange-400 w-screen h-screen flex items-center justify-center min-h-screen bg-gray-200">

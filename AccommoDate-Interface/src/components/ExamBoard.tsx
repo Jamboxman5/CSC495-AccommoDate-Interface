@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getToken } from "../services/auth";
-import { formatWeekDate, formatTime, getCourseEndTime } from "../services/dateUtil";
+import { formatTime, getCourseEndTime } from "../services/dateUtil";
 import { FullExam } from "../interfaces/FullExam";
 import { getAccommodationString } from "../services/textUtil";
 type Props = {
@@ -42,28 +42,6 @@ export default function ExamBoard({ date }: Props) {
             });
     }, [date]);
 
-
-
-
-
-    const toggleOnline = (examID: string) => {
-        const updatedExams = exams.map((exam) => {
-            if (exam.exam.examid === examID) {
-                return {
-                    ...exam,
-                    exam: {
-                        ...exam.exam,
-                        examonline: !exam.exam.examonline,
-                    },
-                };
-            }
-            return exam;
-        });
-
-        setExams(updatedExams);
-    };
-
-
     const handleCompleteToggle = (examID: string, isComplete: boolean) => {
         const message = isComplete ?
             "Are you sure you want to mark this exam as incomplete?" :
@@ -90,7 +68,7 @@ export default function ExamBoard({ date }: Props) {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${getToken()}`,
             },
-            body: JSON.stringify(updatedExam?.exam), // send only the exam portion
+            body: JSON.stringify(updatedExam?.exam), 
         })
             .then((res) => {
                 if (!res.ok) {
@@ -133,36 +111,30 @@ export default function ExamBoard({ date }: Props) {
                                         <th scope="col" className="px-6 py-3">Location</th>
                                         <th scope="col" className="px-6 py-3">Class Days</th>
                                         <th scope="col" className="px-6 py-3">End Time</th>
+                                        <th scope="col" className="px-6 py-3"></th>
                                         <th scope="col" className="px-6 py-3">Accommodations</th>
-                                        <th scope="col" className="px-6 py-3">Online?</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {exams.map((fullExam) => (
-                                        <tr key={fullExam.exam.examid} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
+                                        <tr key={fullExam.exam.examid} className="even:bg-gray-700 odd:bg-gray-800 dark:border-gray-600 border-b dark:bg-gray-800 border-gray-700">
                                             <th scope="row" className="px-6 py-4 text-center">
                                                 <input
                                                     type="checkbox"
                                                     checked={fullExam.exam.examcomplete}
                                                     onChange={() => handleCompleteToggle(fullExam.exam.examid, fullExam.exam.examcomplete)}
                                                 />                                        </th>
-                                            <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                            <th scope="row" className="text-white px-6 py-4 font-medium whitespace-nowrap dark:text-white">
                                                 {fullExam.user.fullname}
                                             </th>
 
-                                            <td className="px-6 py-4">{fullExam.course.courseid}</td>
-                                            <td className="px-6 py-4">{formatTime(fullExam.exam.examtime)}</td>
-                                            <td className="px-6 py-4">{fullExam.exam.examdate}</td>
-                                            <td className="px-6 py-4">{fullExam.course.meetdays}</td>
-                                            <td className="px-6 py-4">{getCourseEndTime(fullExam.exam.examtime, fullExam.exam.examduration * fullExam.user.timeextension)}</td>
-                                            <td className="px-6 py-4">{getAccommodationString(fullExam.user)}</td>
-                                            <td className="px-6 py-4 text-center">
-                                                <input
-                                                    type="checkbox"
-                                                    checked={fullExam.exam.examonline}
-                                                    onChange={() => toggleOnline(fullExam.exam.examid)}
-                                                />
-                                            </td>
+                                            <td className="text-white px-6 py-4">{fullExam.course.courseid}</td>
+                                            <td className="text-white px-6 py-4">{formatTime(fullExam.exam.examtime)}</td>
+                                            <td className="text-white px-6 py-4">{fullExam.exam.examdate}</td>
+                                            <td className="text-white px-6 py-4">{fullExam.course.meetdays}</td>
+                                            <td className="text-white px-6 py-4">{getCourseEndTime(fullExam.exam.examtime, fullExam.exam.examduration * fullExam.user.timeextension)}</td>
+                                            <td className="text-white px-6 py-4 text-center">{fullExam.exam.examonline ? ("Online") : ("")}</td>
+                                            <td className="text-white px-6 py-4">{getAccommodationString(fullExam.user)}</td>
 
                                         </tr>
                                     ))}

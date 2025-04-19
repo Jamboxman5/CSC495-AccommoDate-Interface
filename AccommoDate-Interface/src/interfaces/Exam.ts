@@ -11,4 +11,5 @@ export interface Exam {
     examrequested: boolean;
     examduration: number;
     note: string;
+    studentnotified: boolean;
 }

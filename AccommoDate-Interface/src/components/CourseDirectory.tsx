@@ -98,7 +98,7 @@ export default function CourseDirectory() {
                             </thead>
                             <tbody>
                                 {filteredCourses.map((course) => (
-                                    <tr key={course.crn} className="even:bg-gray-700 odd:bg-gray-800 border-b dark:border-gray-600">
+                                    <tr key={course.crn} className="even:bg-gray-700 odd:bg-gray-800 border-b border-gray-700">
                                         <th className="px-6 py-4 text-center font-medium text-gray-100 whitespace-nowrap">
                                             {course.courseid}<br />{course.coursename}
                                         </th>
@@ -118,7 +118,6 @@ export default function CourseDirectory() {
         );
     }
 
-    // Repeat renderSearchBar() and filteredCourses logic for the non-admin view as well
     return (
         <div className="p-4">
             {renderSearchBar()}

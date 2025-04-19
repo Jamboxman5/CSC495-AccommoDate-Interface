@@ -27,7 +27,6 @@ export function getAccommodationString(user: User): string {
         }
 
     }
-    // console.log(JSON.stringify(user))
     return acc;
 
 }

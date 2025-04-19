@@ -1,15 +1,13 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import HomePage from './pages/HomePage';
 import ProtectedRoute from './components/ProtectedRoute';
 import PublicRoute from './components/PublicRoute';
-import NavigationBar from './components/NavigationBar';
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { isTokenExpired, logout, getToken } from "./services/auth";
+import { getToken } from "./services/auth";
 import CoursesPage from './pages/CoursesPage';
 import ExamsPage from './pages/ExamsPage';
 import MeetingsPage from './pages/MeetingsPage';
+import ProfilePage from './pages/ProfilePage';
 export default function App() {
   
   return (
@@ -52,6 +50,14 @@ export default function App() {
           element={
             <ProtectedRoute>
               <ExamsPage />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/profile" 
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
             </ProtectedRoute>
           } 
         />

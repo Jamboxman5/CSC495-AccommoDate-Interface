@@ -5,12 +5,12 @@ import CourseDirectory from "../components/CourseDirectory";
 import MyCourses from "../components/MyCourses";
 import "./tailwind.css"
 
-export default function CoursesPage() {
+export default function ProfilePage() {
 
     const [role, setRole] = useState<string | null>(null);
 
     useEffect(() => {
-        document.title = "Courses - AccommoDate"
+        document.title = "Profile - AccommoDate"
       });
 
     useEffect(() => {
@@ -24,7 +24,7 @@ export default function CoursesPage() {
             <NavigationBar />
             {role === "ROLE_ADMIN" ? (
                 <div>
-                    <h1 className="text-3xl text-white font-bold text-center mb-6">Courses</h1>
+                    <h1 className="text-3xl text-white font-bold text-center mb-6">Profile</h1>
 
 
                     <div className="max-w-screen-xl mx-auto flex flex-col md:flex-row gap-8">
@@ -36,7 +36,7 @@ export default function CoursesPage() {
                 </div>
             ) : (
                 <div>
-                    <h1 className="text-3xl text-white font-bold text-center mb-6">Courses</h1>
+                    <h1 className="text-3xl text-white font-bold text-center mb-6">Profile</h1>
 
 
                     <div className="max-w-screen-xl mx-auto flex flex-col md:flex-row gap-8">

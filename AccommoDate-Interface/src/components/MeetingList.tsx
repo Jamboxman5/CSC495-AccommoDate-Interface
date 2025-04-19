@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import { getID, getToken, getUserRole } from "../services/auth";
-import { formatWeekDate, formatTime, formatPrettyDate, formatDate } from "../services/dateUtil";
+import { formatTime, formatPrettyDate, formatDate } from "../services/dateUtil";
 import { FullMeeting } from "../interfaces/FullMeeting";
-import { getCourseEndTime } from "../services/dateUtil";
-import { getAccommodationString } from "../services/textUtil";
 import "./tailwind.css";
 
 type Props = {
@@ -141,7 +139,7 @@ export default function MeetingList({ pastUpcoming }: Props) {
                             </thead>
                             <tbody className="className=divide-y">
                                 {meetings.map((fullMeeting) => (
-                                    <tr key={fullMeeting.meeting.meetingid} className=" even:bg-gray-700 odd:bg-gray-800 border-b dark:border-gray-600">
+                                    <tr key={fullMeeting.meeting.meetingid} className=" even:bg-gray-700 odd:bg-gray-800 border-b border-gray-700">
                                         <th scope="row" className="px-6 py-4 font-medium whitespace-nowrap text-white text-center">
                                             {fullMeeting.admin.preferredname + " " + fullMeeting.admin.fullname.split(" ")[1]}<br></br>{fullMeeting.admin.title}
                                         </th>

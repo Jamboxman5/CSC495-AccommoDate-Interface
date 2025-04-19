@@ -1,5 +1,4 @@
 import NavigationBar from "../components/NavigationBar";
-import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { getUserRole } from "../services/auth";
 import { formatDate } from "../services/dateUtil";
@@ -8,15 +7,20 @@ import DatedExamList from "../components/DatedExamList";
 import "./tailwind.css"
 import NewExams from "../components/NewExams";
 import PendingExams from "../components/PendingExams";
+import ScheduleExamModal from "../components/ScheduleExamModal";
 
 export default function ExamsPage() {
-    const navigate = useNavigate();
 
+    const [showModal, setShowModal] = useState(false);
 
     const [role, setRole] = useState<string | null>(null);
     const [selectedDate, setSelectedDate] = useState(() => {
         return formatDate(new Date());
     });
+
+    useEffect(() => {
+        document.title = "Exams - AccommoDate"
+      });
 
     useEffect(() => {
         const userRole = getUserRole();
@@ -28,7 +32,7 @@ export default function ExamsPage() {
             <NavigationBar />
             {role === "ROLE_ADMIN" ? (
                 <div>
-                     <p className="text-white text-center font-bold w-full text-5xl max-w-7/8 mr-auto ml-auto mb-10">Manage Exams: </p>
+                    <p className="text-white text-center font-bold w-full text-5xl max-w-7/8 mr-auto ml-auto mb-10">Manage Exams </p>
 
                     <div className="w-full text-center mb-5 mt-5">
                         <p className="text-white text-center font-semibold w-full max-w-7/8 mr-auto ml-auto mb-4">New Exams: </p>
@@ -61,15 +65,18 @@ export default function ExamsPage() {
                 <div>
                     <h1 className="text-3xl text-white font-bold text-center mb-6">Your Exams</h1>
 
-
+                    <button
+                        onClick={() => { setShowModal(true) }}
+                        className="!bg-blue-500 flex ml-auto mr-auto mt-[30px] mb-[20px] justify-center hover:!bg-blue-600 text-white text-xs font-semibold py-1 px-3 rounded-lg transition duration-200"
+                    >Schedule an Exam
+                    </button>
+                    <ScheduleExamModal isOpen={showModal} onClose={() => setShowModal(false)} />
                     <div className="max-w-screen-xl mx-auto flex flex-col md:flex-row gap-8">
-                        {/* Upcoming Meetings */}
                         <div className="flex-1">
                             <h2 className="text-xl text-gray-100 font-semibold mb-2 pb-4 pt-4 text-center md:text-left">Upcoming Exams:</h2>
                             <StudentExamList pastUpcoming="upcoming" />
                         </div>
 
-                        {/* Past Meetings */}
                         <div className="flex-1">
                             <h2 className="text-xl text-gray-100 font-semibold mb-2 pb-4 pt-4 text-center md:text-left">Past Exams:</h2>
                             <StudentExamList pastUpcoming="past" />
@@ -79,19 +86,5 @@ export default function ExamsPage() {
             )}
 
         </div>
-        // <div className="w-screen">
-        //     <NavigationBar />
-        //     <h1 className="w-full max-w-7/8">Browse Exams</h1>
-
-        //     {role === "ROLE_ADMIN" ? (
-        //         
-        //     ) : (
-        //         <div>
-        //             <StudentExamList pastUpcoming={"upcoming"} />
-        //             <StudentExamList pastUpcoming={"past"} />
-        //         </div>
-
-        //     )}
-        // </div>
     )
 }

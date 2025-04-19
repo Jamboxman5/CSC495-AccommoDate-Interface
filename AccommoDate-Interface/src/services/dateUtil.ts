@@ -30,10 +30,12 @@ export function formatDate(date: Date): string {
         return date;
     }
 
+    export function isWeekDay(date: Date): boolean {
+        return (date.getDay() > 0 && date.getDay() < 6);
+    }
+
     export function getWeekDay(date: Date, day: number): string {
-        console.log(date)
         var weekday = date.getDay();
-        console.log(weekday)
         date.setDate(date.getDate() - weekday + day)
         
         return date.toLocaleDateString(undefined, {
@@ -43,7 +45,7 @@ export function formatDate(date: Date): string {
 
     export function formatWeekDate(dateStr: string): string {
         const [year, month, day] = dateStr.split("-").map(Number);
-        const localDate = new Date(year, month - 1, day); // month is 0-indexed
+        const localDate = new Date(year, month - 1, day); 
         return localDate.toLocaleDateString(undefined, {
           weekday: "long",
           year: "numeric",
@@ -60,6 +62,12 @@ export function formatDate(date: Date): string {
             hour: "numeric",
             minute: "2-digit",
         })
+      }
+
+      export function getFixedTime(time: string): string {
+        const parts = time.split(':');
+        if (parts.length == 2) return time + ":00"
+        else return time;
       }
 
       export function getFormattedTime(time: String): String {
