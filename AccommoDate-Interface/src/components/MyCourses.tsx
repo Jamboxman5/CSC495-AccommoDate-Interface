@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getToken, getID } from "../services/auth";
+import { getToken, getID, logout } from "../services/auth";
 import { getFormattedTime, getCourseEndTime } from "../services/dateUtil";
 import { Course } from "../interfaces/Course";
 
@@ -27,6 +27,8 @@ export default function MyCourses() {
         })
             .then((res) => {
                 if (!res.ok) throw new Error('Failed to fetch courses');
+                                                                if (res.status == 403) logout();
+                
                 return res.json();
             })
             .then((data: Course[]) => {

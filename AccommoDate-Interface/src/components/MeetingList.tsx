@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getID, getToken, getUserRole } from "../services/auth";
+import { getID, getToken, getUserRole, logout } from "../services/auth";
 import { formatTime, formatPrettyDate, formatDate } from "../services/dateUtil";
 import { FullMeeting } from "../interfaces/FullMeeting";
 import "./tailwind.css";
@@ -57,6 +57,8 @@ export default function MeetingList({ pastUpcoming }: Props) {
             })
                 .then((res) => {
                     if (!res.ok) throw new Error('Failed to fetch meetings');
+                                                                    if (res.status == 403) logout();
+                    
                     return res.json();
                 })
                 .then((data: FullMeeting[]) => {

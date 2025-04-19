@@ -1,6 +1,7 @@
 import { User } from "../interfaces/User";
 
-export function getAccommodationString(user: User): string {
+export function getAccommodationString(user: User | null): string {
+    if (user == null) return "ERROR"
     var acc = "";
     if (user.timeextension > 1) {
         acc += user.timeextension + "x";

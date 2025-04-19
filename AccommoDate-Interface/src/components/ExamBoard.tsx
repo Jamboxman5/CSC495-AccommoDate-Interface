@@ -130,7 +130,7 @@ export default function ExamBoard({ date }: Props) {
 
                                             <td className="text-white px-6 py-4">{fullExam.course.courseid}</td>
                                             <td className="text-white px-6 py-4">{formatTime(fullExam.exam.examtime)}</td>
-                                            <td className="text-white px-6 py-4">{fullExam.exam.examdate}</td>
+                                            <td className="text-white px-6 py-4">{fullExam.exam.examlocation}</td>
                                             <td className="text-white px-6 py-4">{fullExam.course.meetdays}</td>
                                             <td className="text-white px-6 py-4">{getCourseEndTime(fullExam.exam.examtime, fullExam.exam.examduration * fullExam.user.timeextension)}</td>
                                             <td className="text-white px-6 py-4 text-center">{fullExam.exam.examonline ? ("Online") : ("")}</td>

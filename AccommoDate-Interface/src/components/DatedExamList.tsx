@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getToken } from "../services/auth";
+import { getToken, logout } from "../services/auth";
 import { formatPrettyDate, formatTime } from "../services/dateUtil";
 import { FullExam } from "../interfaces/FullExam";
 import { getCourseEndTime } from "../services/dateUtil";
@@ -89,6 +89,8 @@ export default function DatedExamList({ date }: Props) {
         })
             .then((res) => {
                 if (!res.ok) throw new Error('Failed to fetch exams');
+                                                                if (res.status == 403) logout();
+                
                 return res.json();
             })
             .then((data: FullExam[]) => {

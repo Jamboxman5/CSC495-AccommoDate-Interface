@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getID, getToken } from "../services/auth";
+import { getID, getToken, logout } from "../services/auth";
 import { formatDate, isWeekDay, getFixedTime } from "../services/dateUtil";
 import { Admin } from "../interfaces/Admin";
 
@@ -30,6 +30,8 @@ export default function ScheduleMeetingModal({ isOpen, onClose }: Props) {
         })
             .then((res) => {
                 if (!res.ok) throw new Error("Failed to fetch admins");
+                                if (res.status == 403) logout();
+                
                 return res.json();
             })
             .then((data: Admin[]) => {

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getToken, getID } from "../services/auth";
+import { getToken, getID, logout } from "../services/auth";
 import { FullExam } from "../interfaces/FullExam";
 import { Exam } from "../interfaces/Exam";
 import { formatDate, formatTime, formatPrettyDate, getCourseEndTime } from "../services/dateUtil";
@@ -37,6 +37,7 @@ export default function StudentExamList({ pastUpcoming }: Props) {
         })
             .then((res) => {
                 if (!res.ok) throw new Error('Failed to fetch exams');
+                if (res.status == 403) logout();
                 return res.json();
             })
             .then((data: FullExam[]) => {
@@ -44,6 +45,7 @@ export default function StudentExamList({ pastUpcoming }: Props) {
             })
             .catch((err) => {
                 setError(err.message);
+                
             }).finally(() => {
                 setLoading(false)
             })
@@ -52,6 +54,7 @@ export default function StudentExamList({ pastUpcoming }: Props) {
 
     const getStatus = (exam: Exam): string => {
         if (exam.examcomplete) return "Complete";
+        else if (pastUpcoming == "past") return "Missed";
         else if (exam.examconfirmed) return "Confirmed";
         else if (exam.examrequested) return "Pending";
         else return "Requested";

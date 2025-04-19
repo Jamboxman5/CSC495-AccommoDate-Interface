@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getToken } from "../services/auth";
+import { getToken, logout } from "../services/auth";
 import { formatPrettyDate, formatTime } from "../services/dateUtil";
 import { FullExam } from "../interfaces/FullExam";
 import { Exam } from "../interfaces/Exam";
@@ -120,6 +120,8 @@ export default function PendingExams() {
             },
         })
             .then((res) => {
+                                                if (res.status == 403) logout();
+                
                 if (!res.ok) throw new Error('Failed to fetch exams');
                 return res.json();
             })

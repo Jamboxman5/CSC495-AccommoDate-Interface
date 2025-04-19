@@ -2,7 +2,7 @@ import { FullExam } from "../interfaces/FullExam";
 import { formatTime, getCourseEndTime, formatMinutes, getWeekDay } from "../services/dateUtil";
 import { getDay, startOfWeek, endOfWeek, format, parseISO } from "date-fns";
 import { useState, useEffect } from "react";
-import { getID, getToken } from "../services/auth";
+import { getID, getToken, logout } from "../services/auth";
 import './tailwind.css'
 type Props = {
     date: string;
@@ -53,6 +53,7 @@ export default function WeeklySchedule({ date }: Props) {
                 });
 
                 if (!response.ok) throw new Error("Failed to fetch exams.");
+                                if (response.status == 403) logout();
 
                 const data: FullExam[] = await response.json();
 
