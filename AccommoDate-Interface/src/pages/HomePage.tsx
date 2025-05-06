@@ -17,25 +17,27 @@ export default function HomePage() {
 
     useEffect(() => {
         document.title = "Home - AccommoDate"
-      });
+    });
     return (
         <div className="">
             <div className='w-screen bg-gradient-to-br from-indigo-600 to-orange-400 pt-40 min-h-screen'>
                 <NavigationBar />
                 <h1 className="text-center font-bold text-white">Welcome to AccommoDate!</h1>
-                <p className="text-center mt-10 mb-10">You are logged in as <strong>{role}</strong>.</p>
-
+                {/* <p className="text-center mt-10 mb-10">You are logged in as <strong>{role}</strong>.</p> */}
+                <div className='pt-16'>
                 {role === "ROLE_ADMIN" ? (
                     <ExamBoard date={formatDate(new Date())} />
                 ) : (
                     <div>
-                        <h2 className="text-2xl text-center my-4 pb-5 font-semibold text-gray-200">Your Exams This Week:</h2>
+                        <h2 className="text-2xl text-center my-4 pb-5 font-semibold text-gray-100">Your Exams This Week:</h2>
 
                         <WeeklySchedule date={formatDate(new Date())} />
                         <br />
                     </div>
 
                 )}
+                </div>
+                
             </div>
         </div>
 

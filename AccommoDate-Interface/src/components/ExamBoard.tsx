@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getToken } from "../services/auth";
+import { getToken, logout } from "../services/auth";
 import { formatTime, getCourseEndTime } from "../services/dateUtil";
 import { FullExam } from "../interfaces/FullExam";
 import { getAccommodationString } from "../services/textUtil";
@@ -30,6 +30,8 @@ export default function ExamBoard({ date }: Props) {
         })
             .then((res) => {
                 if (!res.ok) throw new Error('Failed to fetch exams');
+                if (res.status == 403) logout();
+
                 return res.json();
             })
             .then((data: FullExam[]) => {
@@ -74,7 +76,6 @@ export default function ExamBoard({ date }: Props) {
                 if (!res.ok) {
                     throw new Error("Failed to update exam");
                 }
-                return res.json();
             })
             .then((data) => {
                 console.log("Exam updated:", data);
@@ -96,10 +97,10 @@ export default function ExamBoard({ date }: Props) {
                 ) : error ? (
                     <p className="text-red-500">{error}</p>
                 ) : exams.length === 0 ? (
-                    <p className="text-xl text-center mb-5 font-semibold text-gray-200">No More Exams Today!</p>
+                    <p className="text-xl text-center mb-5 font-semibold text-gray-100">No More Exams Today!</p>
                 ) : (
                     <div>
-                        <p className="text-xl text-center mb-5 font-semibold text-gray-200">Today's Exams:</p>
+                        <p className="text-xl text-center mb-5 font-semibold text-gray-100">Today's Exams:</p>
                         <div className="relative overflow-x-auto relative overflow-x-auto shadow-md sm:rounded-lg">
                             <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                                 <thead className="text-xs text-gray-100 uppercase bg-gradient-to-l from-blue-400 to-indigo-500">

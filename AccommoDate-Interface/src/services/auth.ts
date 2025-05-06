@@ -30,6 +30,7 @@ export async function login(email: string, password: string) {
   }
 
   const data = await response.json();
+  console.log(JSON.stringify(data));
   storeID(data.id);
   storeToken(data.token);
 }

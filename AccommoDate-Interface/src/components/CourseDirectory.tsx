@@ -2,14 +2,23 @@ import { useEffect, useState } from "react";
 import { getToken, getID, getUserRole, logout } from "../services/auth";
 import { getFormattedTime, getCourseEndTime } from "../services/dateUtil";
 import { Course } from "../interfaces/Course";
+import NewCourseModal from "./NewCourseModal";
+import EditCourseModal from "./EditCourseModal";
 
 export default function CourseDirectory() {
     const [courses, setCourses] = useState<Course[]>([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setLoading] = useState(false);
+    const [showNewModal, setShowNewModal] = useState(false);
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [editingCourse, setEditingCourse] = useState<Course | null>(null);
 
     useEffect(() => {
+        loadCourses();
+    }, []);
+
+    const loadCourses = () => {
         const token = getToken();
         const userId = getID();
 
@@ -25,21 +34,21 @@ export default function CourseDirectory() {
                 'Authorization': `Bearer ${token}`,
             },
         })
-        .then(res => {
-            if (!res.ok) throw new Error('Failed to fetch courses');
-                                                            if (res.status == 403) logout();
-            
-            return res.json();
-        })
-        .then((data: Course[]) => {
-            setCourses(data);
-        })
-        .catch((err) => {
-            setError(err.message);
-        }).finally(() => {
-            setLoading(false);
-        });
-    }, []);
+            .then(res => {
+                if (!res.ok) throw new Error('Failed to fetch courses');
+                if (res.status == 403) logout();
+
+                return res.json();
+            })
+            .then((data: Course[]) => {
+                setCourses(data);
+            })
+            .catch((err) => {
+                setError(err.message);
+            }).finally(() => {
+                setLoading(false);
+            });
+    }
 
     const getCourseTime = (meettime: string, meetduration: number): string => {
         if (meettime == null || meetduration == null) return "Online";
@@ -61,7 +70,7 @@ export default function CourseDirectory() {
     });
 
     const renderSearchBar = () => (
-        <div className="mb-4 flex  justify-center ml-1 ">
+        <div className="mb-4 flex gap-4 justify-center ml-1 ">
             <input
                 type="text"
                 value={searchTerm}
@@ -69,6 +78,12 @@ export default function CourseDirectory() {
                 placeholder="Search courses..."
                 className="px-4 py-2 w-full bg-gray-700 max-w-md text-white placeholder-gray-300 rounded-md shadow-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+            <button
+                onClick={() => { setShowNewModal(true); }}
+                className="!bg-blue-500 hover:!bg-blue-600 text-white text-xs font-semibold py-1 px-3 rounded-lg transition duration-200"
+            >
+                New
+            </button>
         </div>
     );
 
@@ -96,6 +111,7 @@ export default function CourseDirectory() {
                                     <th className="text-center px-6 py-3">Time</th>
                                     <th className="text-center px-6 py-3">Instructor</th>
                                     <th className="text-center px-6 py-3">Instructor Email</th>
+                                    <th className="text-center px-6 py-3"></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -110,10 +126,37 @@ export default function CourseDirectory() {
                                         <td className="text-center text-white px-6 py-4">{getCourseTime(course.meettime, course.meetduration)}</td>
                                         <td className="text-center text-white px-6 py-4">{course.instructor}</td>
                                         <td className="text-center text-white px-6 py-4">{course.instructoremail}@oswego.edu</td>
+                                        <td className="text-center text-white px-6 py-4">
+                                        <button
+                                            onClick={() => { setShowEditModal(true); setEditingCourse(course) }}
+                                            className="!bg-transparent hover:!bg-blue-600 text-white text-xs font-semibold py-1 px-3 rounded-lg transition duration-200"
+                                        >
+                                            Edit
+                                        </button>
+                                        </td>
+                                        
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
+                        {editingCourse && (
+                            <EditCourseModal
+                                isOpen={showEditModal}
+                                editing={editingCourse}
+                                onClose={() => {
+                                    setShowEditModal(false);
+                                    setEditingCourse(null);
+                                    loadCourses();
+                                }}
+                            />
+                        )}
+                        {<NewCourseModal
+                            isOpen={showNewModal}
+                            onClose={() => {
+                                setShowNewModal(false);
+                                loadCourses();
+                            }}
+                        />}
                     </div>
                 )}
             </div>

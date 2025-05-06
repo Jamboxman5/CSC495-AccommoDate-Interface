@@ -107,6 +107,7 @@ export default function ScheduleExamModal({ isOpen, onClose }: Props) {
 
     const getExamDuration = (course: StudentCourse | null): number => {
         if (course == null) return 0;
+        if (course.course.meetduration == 0) return 60;
         return course.course.meetduration;
     }
 

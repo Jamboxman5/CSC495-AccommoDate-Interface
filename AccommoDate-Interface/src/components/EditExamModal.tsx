@@ -66,6 +66,32 @@ export default function EditExamModal({ isOpen, editing, onClose }: Props) {
             });
 
     }
+    const handleDeleteExam = () => {
+        const message = "Are you sure you want delete this exam?";
+
+        const confirmed = window.confirm(message);
+
+        if (!confirmed) return;
+
+        fetch(`http://localhost:8080/api/exam/delete/${editing.examid}`, {
+            method: "DELETE",
+            headers: {
+                "Authorization": `Bearer ${getToken()}`,
+            },
+        })
+            .then((res) => {
+                if (!res.ok) {
+                    throw new Error("Failed to delete exam");
+                }
+            })
+            .then((data) => {
+                console.log("Exam deleted:", data);
+            })
+            .catch((err) => {
+                console.error("Error deleted exam: ", err);
+            });
+
+    }
     const isValidDate = (exam: Exam): boolean => {
         if (exam.examdate) return true;
         else return false;
@@ -214,6 +240,15 @@ export default function EditExamModal({ isOpen, editing, onClose }: Props) {
                         className="px-4 py-2 text-sm !bg-gray-200 rounded hover:!bg-gray-300"
                     >
                         Cancel
+                    </button>
+                    <button
+                        onClick={() => {
+                            handleDeleteExam();
+                            onClose();
+                        }}
+                        className="px-4 py-2 text-sm !text-white !bg-red-500 rounded hover:!bg-red-600 hober:!border-red-600"
+                    >
+                        Delete
                     </button>
                     <button
                         onClick={() => {

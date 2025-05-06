@@ -89,8 +89,8 @@ export default function DatedExamList({ date }: Props) {
         })
             .then((res) => {
                 if (!res.ok) throw new Error('Failed to fetch exams');
-                                                                if (res.status == 403) logout();
-                
+                if (res.status == 403) logout();
+
                 return res.json();
             })
             .then((data: FullExam[]) => {

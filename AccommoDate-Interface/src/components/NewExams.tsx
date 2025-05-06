@@ -23,18 +23,32 @@ export default function NewExams() {
 
     const handleRequest = async (examId: string) => {
         try {
-            const response = await fetch(`http://localhost:8080/api/exam/request/${examId}`, {
+            fetch(`http://localhost:8080/api/exam/request/${examId}`, {
                 method: 'GET',
                 headers: {
                     Authorization: `Bearer ${getToken()}`,
                 },
+            }).then((response) => {
+                if (!response.ok) {
+                    throw new Error('Request failed');
+                }
+            })
+            
+            .then((data) => {
+                console.log("Exam updated:", data);
+            })
+            .catch((err) => {
+                console.error("Error updating exam:", err);
+                setError("Failed to update exam on the server.");
+            }).finally(() => {
+                alert('Request sent successfully!');
+                loadExams();
+                window.location.reload();
+
             });
 
-            if (!response.ok) {
-                throw new Error('Request failed');
-            }
+            
 
-            alert('Request sent successfully!');
         } catch (error) {
             console.error('Error:', error);
             alert('Failed to send request.');
@@ -80,6 +94,8 @@ export default function NewExams() {
             .catch((err) => {
                 console.error("Error updating exam:", err);
                 setError("Failed to update exam on the server.");
+            }).finally(()=> {
+                window.location.reload();
             });
 
     }
@@ -100,8 +116,8 @@ export default function NewExams() {
         })
             .then((res) => {
                 if (!res.ok) throw new Error('Failed to fetch exams');
-                                                                if (res.status == 403) logout();
-                
+                if (res.status == 403) logout();
+
                 return res.json();
             })
             .then((data: FullExam[]) => {

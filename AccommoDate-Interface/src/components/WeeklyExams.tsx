@@ -15,15 +15,15 @@ const hours = Array.from({ length: 12 }, (_, i) => 7 + i);
 const timeToPixels = (time: string) => {
     const [hour, minute] = time.split(":").map(Number);
     const minutesSinceStart = (hour * 60 + minute) - (7 * 60);
-    return (minutesSinceStart / 60) * verticalScale; 
+    return (minutesSinceStart / 60) * verticalScale;
 };
 
 export default function WeeklySchedule({ date }: Props) {
-    const weekdays = [getWeekDay(new Date(), 1), 
-        getWeekDay(new Date(), 2), 
-        getWeekDay(new Date(), 3), 
-        getWeekDay(new Date(), 4), 
-        getWeekDay(new Date(), 5)
+    const weekdays = [getWeekDay(new Date(), 1),
+    getWeekDay(new Date(), 2),
+    getWeekDay(new Date(), 3),
+    getWeekDay(new Date(), 4),
+    getWeekDay(new Date(), 5)
     ];
 
     const [exams, setExams] = useState<FullExam[]>([]);
@@ -53,7 +53,7 @@ export default function WeeklySchedule({ date }: Props) {
                 });
 
                 if (!response.ok) throw new Error("Failed to fetch exams.");
-                                if (response.status == 403) logout();
+                if (response.status == 403) logout();
 
                 const data: FullExam[] = await response.json();
 
@@ -76,7 +76,7 @@ export default function WeeklySchedule({ date }: Props) {
     exams.forEach((exam) => {
         const examDate = parseISO(exam.exam.examdate);
         const dayIndex = getDay(examDate);
-        const day = weekdays[dayIndex - 1]; 
+        const day = weekdays[dayIndex - 1];
 
         if (groupedByDay[day]) {
             groupedByDay[day].push(exam);

@@ -38,6 +38,7 @@ export default function MeetingList({ pastUpcoming }: Props) {
             })
                 .then((res) => {
                     if (!res.ok) throw new Error('Failed to fetch meetings');
+                    if (res.status == 403) logout();
                     return res.json();
                 })
                 .then((data: FullMeeting[]) => {
@@ -57,8 +58,8 @@ export default function MeetingList({ pastUpcoming }: Props) {
             })
                 .then((res) => {
                     if (!res.ok) throw new Error('Failed to fetch meetings');
-                                                                    if (res.status == 403) logout();
-                    
+                    if (res.status == 403) logout();
+
                     return res.json();
                 })
                 .then((data: FullMeeting[]) => {
@@ -90,8 +91,8 @@ export default function MeetingList({ pastUpcoming }: Props) {
                         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                             <thead className="text-xs text-gray-100 uppercase bg-gradient-to-l from-blue-400 to-indigo-500 dark:bg-gray-700 dark:text-gray-400">
                                 <tr>
-                                <th scope="col" className="px-6 py-3 text-center">{pastUpcoming === "past" ? ("Met") : ("Meeting")} with</th>
-                                <th scope="col" className="text-center px-6 py-3">Date</th>
+                                    <th scope="col" className="px-6 py-3 text-center">{pastUpcoming === "past" ? ("Met") : ("Meeting")} with</th>
+                                    <th scope="col" className="text-center px-6 py-3">Date</th>
                                     <th scope="col" className="text-center px-6 py-3">Time</th>
                                     <th scope="col" className="text-center px-6 py-3">Virtual / In Person</th>
                                 </tr>
@@ -100,7 +101,7 @@ export default function MeetingList({ pastUpcoming }: Props) {
                                 {meetings.map((fullMeeting) => (
                                     <tr key={fullMeeting.meeting.meetingid} className=" even:bg-gray-700 odd:bg-gray-800 border-b dark:border-gray-600">
                                         <th scope="row" className="px-6 py-4 text-center font-medium text-gray-100 whitespace-nowrap dark:text-white text-center">
-                                            {fullMeeting.user.preferredname + " " + fullMeeting.user.fullname.split(" ")[1]}<br></br>{fullMeeting.user.title}
+                                            {fullMeeting.user.preferredname.length >= 1 ? (fullMeeting.user.preferredname + " " + fullMeeting.user.fullname.split(" ")[1]) : (fullMeeting.user.fullname)}<br></br>{fullMeeting.user.title}
                                         </th>
                                         <td className="text-center text-white px-6 py-4">{formatPrettyDate(fullMeeting.meeting.meetdate)}</td>
                                         <td className="text-center text-white px-6 py-4">{formatTime(fullMeeting.meeting.meettime)}</td>
@@ -133,8 +134,8 @@ export default function MeetingList({ pastUpcoming }: Props) {
                         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                             <thead className="bg-gradient-to-l from-blue-400 to-indigo-500 text-xs text-gray-100 uppercase dark:bg-gray-700 dark:text-gray-400">
                                 <tr>
-                                <th scope="col" className="px-6 py-3 text-center">{pastUpcoming === "past" ? ("Met") : ("Meeting")} with</th>
-                                <th scope="col" className="px-6 py-3 text-center">Date</th>
+                                    <th scope="col" className="px-6 py-3 text-center">{pastUpcoming === "past" ? ("Met") : ("Meeting")} with</th>
+                                    <th scope="col" className="px-6 py-3 text-center">Date</th>
                                     <th scope="col" className="px-6 py-3 text-center">Time</th>
                                     <th scope="col" className="px-6 py-3 text-center">Virtual / In Person</th>
                                 </tr>

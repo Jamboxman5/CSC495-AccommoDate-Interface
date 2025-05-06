@@ -8,12 +8,14 @@ import CoursesPage from './pages/CoursesPage';
 import ExamsPage from './pages/ExamsPage';
 import MeetingsPage from './pages/MeetingsPage';
 import ProfilePage from './pages/ProfilePage';
+import AdminRoute from './components/AdminRoute';
+import StudentsPage from './pages/StudentsPage';
 export default function App() {
-  
+
   return (
     <>
       <Routes>
-       <Route
+        <Route
           path="/login"
           element={
             <PublicRoute>
@@ -21,49 +23,60 @@ export default function App() {
             </PublicRoute>
           }
         />
-        <Route 
-          path="/home" 
+        <Route
+          path="/home"
           element={
             <ProtectedRoute>
               <HomePage />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/courses" 
+        <Route
+          path="/courses"
           element={
             <ProtectedRoute>
               <CoursesPage />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/meetings" 
+        <Route
+          path="/meetings"
           element={
             <ProtectedRoute>
               <MeetingsPage />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/exams" 
+        <Route
+          path="/exams"
           element={
             <ProtectedRoute>
               <ExamsPage />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/profile" 
+        <Route
+          path="/profile"
           element={
             <ProtectedRoute>
               <ProfilePage />
             </ProtectedRoute>
-          } 
+          }
+        />
+        <Route
+          path="/students"
+          element={
+            <ProtectedRoute>
+              <AdminRoute>
+                <StudentsPage />
+
+              </AdminRoute>
+            </ProtectedRoute>
+          }
         />
         <Route path="/" element={<Navigate to={getToken() ? '/home' : '/login'} />} />
         <Route path="*" element={<Navigate to={getToken() ? '/home' : '/login'} />} />
-        </Routes>
+      </Routes>
     </>
   );
 }

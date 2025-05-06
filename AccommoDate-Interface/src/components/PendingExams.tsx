@@ -58,6 +58,8 @@ export default function PendingExams() {
             .catch((err) => {
                 console.error("Error updating exam:", err);
                 setError("Failed to update exam on the server.");
+            }).finally(()=> {
+                window.location.reload();
             });
 
     }
@@ -101,6 +103,8 @@ export default function PendingExams() {
             .catch((err) => {
                 console.error("Error updating exam:", err);
                 setError("Failed to update exam on the server.");
+            }).finally(()=> {
+                window.location.reload();
             });
 
     }
